@@ -1,1 +1,1 @@
-This is a website for PHP1 course.
+> This is a website for Web Programming PHP1 course at the ICT College of vocational studies.
