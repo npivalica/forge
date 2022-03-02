@@ -6,7 +6,7 @@
 
 <html lang="en">
   <head>
-    <title>forge - <?php echo $page_title; ?></title>
+    <title>forge - <?php echo htmlspecialchars($page_title); ?></title>
     <meta charset="utf-8">
     <link rel="stylesheet" media="all" href="<?php echo url_for('/stylesheets/staff.css');?>" />
   </head>
