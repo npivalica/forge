@@ -10,18 +10,22 @@ $position = '';
 $visible = '';
 
 if (is_post_request()) {
-    // Handle form values sent by new.php
 
-    $menu_name = $_POST['menu_name'] ?? '';
-    $position = $_POST['position'] ?? '';
-    $visible = $_POST['visible'] ?? '';
+    $page = [];
+    $page['id'] = $id;
+    $page['subject_id'] = $_POST['subject_id'] ?? '';
+    $page['menu_name'] = $_POST['menu_name'] ?? '';
+    $page['position'] = $_POST['position'] ?? '';
+    $page['visible'] = $_POST['visible'] ?? '';
+    $page['content'] = $_POST['content'] ?? '';
 
-    echo "Form parameters<br />";
-    echo "Menu name: " . $menu_name . "<br />";
-    echo "Position: " . $position . "<br />";
-    echo "Visible: " . $visible . "<br />";
+    $result = update_page($page);
+    redirect_to(url_for('/staff/pages/show.php?id=' . $id));
 } else {
-    //
+    $page = find_page_by_id($id);
+
+    $page_set = find_all_pages();
+    $page_count = count($page_set);
 }
 
 ?>
@@ -38,16 +42,39 @@ if (is_post_request()) {
 
         <form action="<?php echo url_for('/staff/pages/edit.php?id=' . htmlspecialchars(urlencode($id))); ?>" method="post">
             <dl>
+                <dt>Subject</dt>
+                <dd>
+                    <select name="subject_id">
+                        <?php
+                        $subject_set = find_all_subjects();
+                        foreach ($subject_set as $subject) {
+                            echo "<option value=\"" . htmlspecialchars($subject['id']) . "\"";
+                            if ($page["subject_id"] == $subject['id']) {
+                                echo " selected";
+                            }
+                            echo ">" . htmlspecialchars($subject['menu_name']) . "</option>";
+                        }
+                        ?>
+                    </select>
+                </dd>
+            </dl>
+            <dl>
                 <dt>Menu Name</dt>
-                <dd><input type="text" name="menu_name" value="<?php echo htmlspecialchars($menu_name); ?>" /></dd>
+                <dd><input type="text" name="menu_name" value="<?php echo htmlspecialchars($page['menu_name']); ?>" /></dd>
             </dl>
             <dl>
                 <dt>Position</dt>
                 <dd>
                     <select name="position">
-                        <option value="1" <?php if ($position == '1') {
-                                                echo "selected";
-                                            } ?>>1</option>
+                        <?php
+                        for ($i = 1; $i <= $page_count; $i++) {
+                            echo "<option value=\"{$i}\"";
+                            if ($page["position"] == $i) {
+                                echo " selected";
+                            }
+                            echo ">{$i}</option>";
+                        }
+                        ?>
                     </select>
                 </dd>
             </dl>
@@ -55,9 +82,15 @@ if (is_post_request()) {
                 <dt>Visible</dt>
                 <dd>
                     <input type="hidden" name="visible" value="0" />
-                    <input type="checkbox" name="visible" value="1" <?php if ($visible == 1) {
+                    <input type="checkbox" name="visible" value="1" <?php if ($page['visible'] == 1) {
                                                                         echo "checked";
                                                                     } ?> />
+                </dd>
+            </dl>
+            <dl>
+                <dt>Content</dt>
+                <dd>
+                    <textarea name="content" cols="60" rows="10"><?php echo htmlspecialchars($page['content']); ?></textarea>
                 </dd>
             </dl>
             <div id="operations">

@@ -10,6 +10,13 @@ require_once('../../../private/initialize.php');
 //     exit;
 // }
 //not single form submission
+
+$subject_set = find_all_subjects();
+$subject_count = count($subject_set) + 1;
+
+$subject=[];
+$subject["position"] = $subject_count;
+
 ?>
 
 <?php $page_title = 'Create Subject'; ?>
@@ -31,7 +38,15 @@ require_once('../../../private/initialize.php');
                 <dt>Position</dt>
                 <dd>
                     <select name="position">
-                        <option value="1">1</option>
+                        <?php
+                        for ($i = 1; $i <= $subject_count; $i++) {
+                            echo "<option value=\"{$i}\"";
+                            if ($subject["position"] == $i) {
+                                echo " selected";
+                            }
+                            echo ">{$i}</option>";
+                        }
+                        ?>
                     </select>
                 </dd>
             </dl>

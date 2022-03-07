@@ -20,7 +20,7 @@ $page_set = find_all_pages();
     <table class="list">
       <tr>
         <th>ID</th>
-        <th>Subject ID</th>
+        <th>Subject</th>
         <th>Position</th>
         <th>Visible</th>
         <th>Name</th>
@@ -30,15 +30,16 @@ $page_set = find_all_pages();
       </tr>
 
       <?php foreach ($page_set as $page) { ?>
+        <?php $subject = find_subject_by_id($page['subject_id']); ?>
         <tr>
           <td><?php echo htmlspecialchars($page['id']); ?></td>
-          <td><?php echo htmlspecialchars($page['subject_id']); ?></td>
+          <td><?php echo htmlspecialchars($subject['menu_name']); ?></td>
           <td><?php echo htmlspecialchars($page['position']); ?></td>
           <td><?php echo $page['visible'] == 1 ? 'true' : 'false'; ?></td>
           <td><?php echo htmlspecialchars($page['menu_name']); ?></td>
           <td><a class="action" href="<?php echo url_for('/staff/pages/show.php?id=' . htmlspecialchars(urlencode($page['id']))); ?>">View</a></td>
           <td><a class="action" href="<?php echo url_for('/staff/pages/edit.php?id=' . htmlspecialchars(urlencode($page['id']))); ?>">Edit</a></td>
-          <td><a class="action" href="">Delete</a></td>
+          <td><a class="action" href="<?php echo url_for('/staff/pages/delete.php?id=' . htmlspecialchars(urlencode($page['id']))); ?>">Delete</a></td>
         </tr>
       <?php } ?>
     </table>
