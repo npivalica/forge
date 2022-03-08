@@ -5,9 +5,6 @@ if (!isset($_GET['id'])) {
     redirect_to(url_for('/staff/pages/index.php'));
 }
 $id = $_GET['id'];
-$menu_name = '';
-$position = '';
-$visible = '';
 
 if (is_post_request()) {
 
@@ -20,13 +17,18 @@ if (is_post_request()) {
     $page['content'] = $_POST['content'] ?? '';
 
     $result = update_page($page);
-    redirect_to(url_for('/staff/pages/show.php?id=' . $id));
+    if ($result === true) {
+        redirect_to(url_for('/staff/pages/show.php?id=' . $id));
+    }
+    else{
+        $errors = $result;
+    }
 } else {
     $page = find_page_by_id($id);
-
-    $page_set = find_all_pages();
-    $page_count = count($page_set);
 }
+
+$page_set = find_all_pages();
+$page_count = count($page_set);
 
 ?>
 
@@ -40,6 +42,7 @@ if (is_post_request()) {
     <div class="subject edit">
         <h1>Edit Page</h1>
 
+        <?php echo display_errors($errors); ?>
         <form action="<?php echo url_for('/staff/pages/edit.php?id=' . htmlspecialchars(urlencode($id))); ?>" method="post">
             <dl>
                 <dt>Subject</dt>

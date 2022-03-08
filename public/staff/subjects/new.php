@@ -1,20 +1,31 @@
 <?php
 require_once('../../../private/initialize.php');
-// $test = $_GET['test'] ?? "";
-// if ($test === '404') {
-//     error_404(); //custom error page
-// } elseif ($test === '500') {
-//     error_500();
-// } elseif ($test === 'redirect') {
-//     header("Location: " . url_for('staff/subjects/index.php'));
-//     exit;
-// }
-//not single form submission
+$menu_name = '';
+$position = '';
+$visible = '';
+if (is_post_request()) {
+    // Handle form values sent by new.php
+
+    $subject = [];
+    $subject['menu_name'] = $_POST['menu_name'] ?? '';
+    $subject['position'] = $_POST['position'] ?? '';
+    $subject['visible'] = $_POST['visible'] ?? '';
+
+    $result = insert_subject($subject);
+    if ($result === true) {
+        $new_id = $connection->lastInsertId();
+        redirect_to(url_for('/staff/subjects/show.php?id=' . $new_id));
+    } else {
+        $errors = $result;
+    }
+} else {
+    //display blank form
+}
 
 $subject_set = find_all_subjects();
 $subject_count = count($subject_set) + 1;
 
-$subject=[];
+$subject = [];
 $subject["position"] = $subject_count;
 
 ?>
@@ -29,7 +40,8 @@ $subject["position"] = $subject_count;
     <div class="subject new">
         <h1>Create Subject</h1>
 
-        <form action="<?php echo url_for('/staff/subjects/create.php'); ?>" method="post">
+        <?php echo display_errors($errors); ?>
+        <form action="<?php echo url_for('/staff/subjects/new.php'); ?>" method="post">
             <dl>
                 <dt>Menu Name</dt>
                 <dd><input type="text" name="menu_name" value="" /></dd>

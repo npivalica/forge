@@ -7,6 +7,7 @@ if (!isset($_GET['id'])) {
 $id = $_GET['id'];
 
 
+
 if (is_post_request()) {
     // Handle form values sent by new.php
 
@@ -17,13 +18,22 @@ if (is_post_request()) {
     $subject['visible'] = $_POST['visible'] ?? '';
 
     $result = update_subject($subject);
-    redirect_to(url_for('/staff/subjects/show.php?id=' . $id));
+    if($result === true){
+        redirect_to(url_for('/staff/subjects/show.php?id=' . $id));
+    } 
+    else {
+        $errors = $result;
+    }
+    
+
 } else {
+
     $subject = find_subject_by_id($id);
 
-    $subject_set=find_all_subjects();
-    $subject_count = count($subject_set);
 }
+
+$subject_set = find_all_subjects();
+$subject_count = count($subject_set);
 
 ?>
 
@@ -37,6 +47,7 @@ if (is_post_request()) {
     <div class="subject edit">
         <h1>Edit Subject</h1>
 
+        <?php echo display_errors($errors); ?>
         <form action="<?php echo url_for('/staff/subjects/edit.php?id=' . htmlspecialchars(urlencode($id))); ?>" method="post">
             <dl>
                 <dt>Menu Name</dt>
