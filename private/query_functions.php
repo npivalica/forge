@@ -307,4 +307,173 @@ function find_pages_by_subject_id($subject_id, $options = [])
     $result = $connection->query($sql)->fetchAll();
     return $result;
 }
+
+// ADMINS
+// Find all admins, ordered last_name, first_name
+function find_all_admins()
+{
+    global $connection;
+
+    $sql = "SELECT * FROM admins ";
+    $sql .= "ORDER BY last_name ASC, first_name ASC";
+    $result = $connection->query($sql)->fetchAll();
+    return $result;
+}
+
+function find_admin_by_id($id)
+{
+    global $connection;
+
+    $sql = "SELECT * FROM admins ";
+    $sql .= "WHERE id='" . $id . "' ";
+    $sql .= "LIMIT 1";
+    $result = $connection->query($sql)->fetch();
+    return $result;
+}
+
+function validate_admin($admin)
+{
+
+    if (is_blank($admin['first_name'])) {
+        $errors[] = "First name cannot be blank.";
+    } elseif (!has_length($admin['first_name'], array('min' => 2, 'max' => 255))) {
+        $errors[] = "First name must be between 2 and 255 characters.";
+    }
+
+    if (is_blank($admin['last_name'])) {
+        $errors[] = "Last name cannot be blank.";
+    } elseif (!has_length($admin['last_name'], array('min' => 2, 'max' => 255))) {
+        $errors[] = "Last name must be between 2 and 255 characters.";
+    }
+
+    if (is_blank($admin['email'])) {
+        $errors[] = "Email cannot be blank.";
+    } elseif (!has_length($admin['email'], array('max' => 255))) {
+        $errors[] = "Last name must be less than 255 characters.";
+    } elseif (!has_valid_email_format($admin['email'])) {
+        $errors[] = "Email must be a valid format.";
+    }
+
+    if (is_blank($admin['username'])) {
+        $errors[] = "Username cannot be blank.";
+    } elseif (!has_length($admin['username'], array('min' => 8, 'max' => 255))) {
+        $errors[] = "Username must be between 8 and 255 characters.";
+    } elseif (!has_unique_username($admin['username'], $admin['id'] ?? 0)) {
+        $errors[] = "Username not allowed. Try another.";
+    }
+
+    if (is_blank($admin['password'])) {
+        $errors[] = "Password cannot be blank.";
+    } elseif (!has_length($admin['password'], array('min' => 12))) {
+        $errors[] = "Password must contain 12 or more characters";
+    } elseif (!preg_match('/[A-Z]/', $admin['password'])) {
+        $errors[] = "Password must contain at least 1 uppercase letter";
+    } elseif (!preg_match('/[a-z]/', $admin['password'])) {
+        $errors[] = "Password must contain at least 1 lowercase letter";
+    } elseif (!preg_match('/[0-9]/', $admin['password'])) {
+        $errors[] = "Password must contain at least 1 number";
+    } elseif (!preg_match('/[^A-Za-z0-9\s]/', $admin['password'])) {
+        $errors[] = "Password must contain at least 1 symbol";
+    }
+
+    if (is_blank($admin['confirm_password'])) {
+        $errors[] = "Confirm password cannot be blank.";
+    } elseif ($admin['password'] !== $admin['confirm_password']) {
+        $errors[] = "Password and confirm password must match.";
+    }
+
+    return $errors;
+}
+
+function insert_admin($admin)
+{
+    global $connection;
+
+    $errors = validate_admin($admin);
+    if (!empty($errors)) {
+        return $errors;
+    }
+
+    $hashed_password = $admin['password'];
+
+    $sql = "INSERT INTO admins ";
+    $sql .= "(first_name, last_name, email, username, hashed_password) ";
+    $sql .= "VALUES (:first_name, :last_name, :email, :username, :hashed_password )";
+
+    $stmt = $connection->prepare($sql);
+    $stmt->bindParam(':first_name', $admin['first_name']);
+    $stmt->bindParam(':last_name', $admin['last_name']);
+    $stmt->bindParam(':email', $admin['email']);
+    $stmt->bindParam(':username', $admin['username']);
+    $stmt->bindParam(':hashed_password', $hashed_password);
+
+    $result = $stmt->execute();
+
+    // For INSERT statements, $result is true/false
+    if ($result) {
+        return true;
+    } else {
+        // INSERT failed
+        exit;
+    }
+}
+
+function update_admin($admin)
+{
+    global $connection;
+
+    $errors = validate_admin($admin);
+    if (!empty($errors)) {
+        return $errors;
+    }
+
+    $hashed_password = $admin['password'];
+
+    $sql = "UPDATE admins SET ";
+    $sql .= "first_name=:first_name, ";
+    $sql .= "last_name=:last_name, ";
+    $sql .= "email=:email, ";
+    $sql .= "hashed_password=:hashed_password,";
+    $sql .= "username=:username ";
+    $sql .= "WHERE id=:id ";
+    $sql .= "LIMIT 1";
+
+    $stmt = $connection->prepare($sql);
+    $stmt->bindParam(':first_name', $admin['first_name']);
+    $stmt->bindParam(':last_name', $admin['last_name']);
+    $stmt->bindParam(':email', $admin['email']);
+    $stmt->bindParam(':username', $admin['username']);
+    $stmt->bindParam(':id', $admin['id']);
+    $stmt->bindParam(':hashed_password', $hashed_password);
+
+    $result = $stmt->execute();
+
+    if ($result) {
+        return true;
+    } else {
+        // UPDATE failed
+        exit;
+    }
+}
+
+function delete_admin($admin)
+{
+    global $connection;
+
+    $sql = "DELETE FROM admins ";
+    $sql .= "WHERE id=:id ";
+    $sql .= "LIMIT 1;";
+
+    $stmt = $connection->prepare($sql);
+    $stmt->bindParam(':id', $id);
+    $result = $stmt->execute();
+
+    if ($result) {
+        return true;
+    } else {
+        // DELETE failed
+        exit;
+    }
+}
+
 ?>

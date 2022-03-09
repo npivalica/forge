@@ -79,4 +79,23 @@
     return $page_count === 0;
   }
 
+// has_unique_username('johnqpublic')
+// * Validates uniqueness of admins.username
+// * For new records, provide only the username.
+// * For existing records, provide current ID as second argument
+//   has_unique_username('johnqpublic', 4)
+function has_unique_username($username, $current_id = "0")
+{
+  global $connection;
+
+  $sql = "SELECT * FROM admins ";
+  $sql .= "WHERE username='" . $username . "' ";
+  $sql .= "AND id != '" . $current_id . "'";
+
+  $result = $connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+  $admin_count = count($result);
+
+  return $admin_count === 0;
+}
+
 ?>
