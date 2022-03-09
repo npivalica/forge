@@ -1,11 +1,11 @@
 <?php 
-
+// PREPARE STATEMENT ZA SQL INJECTIONS
 // SUBJECTS
 
 function find_all_subjects(){
     global $connection;
     $sql = "SELECT * FROM subjects ORDER BY position ASC";
-    $result = $connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    $result = $connection->query($sql)->fetchAll();
     return $result;
     
 }
@@ -14,7 +14,7 @@ function find_subject_by_id($id)
 {
     global $connection;
     $sql = "SELECT * FROM subjects WHERE id='" . $id . "'";
-    $result = $connection->query($sql)->fetch(PDO::FETCH_ASSOC);
+    $result = $connection->query($sql)->fetch();
     return $result;
 }
 
@@ -49,7 +49,6 @@ function validate_subject($subject)
     return $errors;
 }
 
-
 function insert_subject($subject){
     global $connection;
 
@@ -61,13 +60,16 @@ function insert_subject($subject){
     $sql = "INSERT INTO subjects ";
     $sql .= "(menu_name, position, visible) ";
     $sql .= "VALUES (";
-    $sql .= "'" . $subject['menu_name'] . "',";
-    $sql .= "'" . $subject['position'] . "',";
-    $sql .= "'" . $subject['visible'] . "'";
+    $sql .= ":menu_name,";
+    $sql .= ":position,";
+    $sql .= ":visible";
     $sql .= ")";
-    // $result = $connection->prepare($sql);
-    // $result->execute();
-    $result = $connection->query($sql);
+
+    $stmt = $connection->prepare($sql);
+    $stmt->bindParam(':menu_name', $subject['menu_name']);
+    $stmt->bindParam(':position', $subject['position']);
+    $stmt->bindParam(':visible', $subject['visible']);
+    $result = $stmt->execute();
 
     if ($result) {
         return true;
@@ -85,13 +87,20 @@ function update_subject($subject){
     }
 
     $sql = "UPDATE subjects SET ";
-    $sql .= "menu_name='" . $subject['menu_name'] . "', ";
-    $sql .= "position='" . $subject['position'] . "', ";
-    $sql .= "visible='" . $subject['visible'] . "' ";
-    $sql .= "WHERE id='" . $subject['id'] . "' ";
+    $sql .= "menu_name=:menu_name, ";
+    $sql .= "position=:position, ";
+    $sql .= "visible=:visible ";
+    $sql .= "WHERE id=:id ";
     $sql .= "LIMIT 1";
 
-    $result = $connection->query($sql);
+    $stmt= $connection->prepare($sql);
+    $stmt->bindParam(':menu_name', $subject['menu_name']);
+    $stmt->bindParam(':position', $subject['position']);
+    $stmt->bindParam(':visible', $subject['visible']);
+    $stmt->bindParam(':id', $subject['id']);
+
+    $result = $stmt->execute();
+
     if ($result) {
         return true;
     } else {
@@ -104,9 +113,13 @@ function delete_subject($id)
     global $connection;
 
     $sql = "DELETE FROM subjects ";
-    $sql .= "WHERE id='" . $id . "' ";
+    $sql .= "WHERE id=:id ";
     $sql .= "LIMIT 1";
-    $result = $connection->query($sql);
+    $stmt = $connection -> prepare($sql);
+
+    $stmt->bindParam(':id', $id);
+
+    $result = $stmt->execute();
 
     if ($result) {
         return true;
@@ -121,19 +134,18 @@ function find_all_pages()
 {
     global $connection;
     $sql = "SELECT * FROM pages ORDER BY subject_id ASC, position ASC";
-    $result = $connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    $result = $connection->query($sql)->fetchAll();
     return $result;
 }
 
 function find_page_by_id($id)
 {
-        global $connection;
-
+    global $connection;
 
     $sql = "SELECT * FROM pages ";
     $sql .= "WHERE id='" . $id . "'";
     $result =$connection->query($sql);
-    $page = ($result)->fetch(PDO::FETCH_ASSOC);;
+    $page = ($result)->fetch();;
     return $page;
 }
 
@@ -192,14 +204,22 @@ function insert_page($page)
     $sql = "INSERT INTO pages ";
     $sql .= "(subject_id, menu_name, position, visible, content) ";
     $sql .= "VALUES (";
-    $sql .= "'" . $page['subject_id'] . "',";
-    $sql .= "'" . $page['menu_name'] . "',";
-    $sql .= "'" . $page['position'] . "',";
-    $sql .= "'" . $page['visible'] . "',";
-    $sql .= "'" . $page['content'] . "'";
+    $sql .= ":subject_id,";
+    $sql .= ":menu_name,";
+    $sql .= ":position,";
+    $sql .= ":visible,";
+    $sql .= ":content";
     $sql .= ")";
-    $result =$connection->query($sql);
-    // For INSERT statements, $result is true/false
+
+    $stmt = $connection->prepare($sql);
+    $stmt->bindParam(':subject_id', $page['subject_id']);
+    $stmt->bindParam(':menu_name', $page['menu_name']);
+    $stmt->bindParam(':position', $page['position']);
+    $stmt->bindParam(':visible', $page['visible']);
+    $stmt->bindParam(':content', $page['content']);
+
+    $result = $stmt->execute();
+    
     if ($result) {
         return true;
     } else {
@@ -217,15 +237,24 @@ function update_page($page)
     }
 
     $sql = "UPDATE pages SET ";
-    $sql .= "subject_id='" . $page['subject_id'] . "', ";
-    $sql .= "menu_name='" . $page['menu_name'] . "', ";
-    $sql .= "position='" . $page['position'] . "', ";
-    $sql .= "visible='" . $page['visible'] . "', ";
-    $sql .= "content='" . $page['content'] . "' ";
-    $sql .= "WHERE id='" . $page['id'] . "' ";
+    $sql .= "subject_id=:subject_id, ";
+    $sql .= "menu_name=:menu_name, ";
+    $sql .= "position=:position, ";
+    $sql .= "visible=:visible, ";
+    $sql .= "content=:content ";
+    $sql .= "WHERE id=:id ";
     $sql .= "LIMIT 1";
 
-    $result =$connection->query($sql);
+    $stmt = $connection->prepare($sql);
+    $stmt->bindParam(':subject_id', $page['subject_id']);
+    $stmt->bindParam(':menu_name', $page['menu_name']);
+    $stmt->bindParam(':position', $page['position']);
+    $stmt->bindParam(':visible', $page['visible']);
+    $stmt->bindParam(':content', $page['content']);
+    $stmt->bindParam(':id', $page['id']);
+
+    $result = $stmt->execute();
+
     if ($result) {
         return true;
     } else {
@@ -239,9 +268,11 @@ function delete_page($id)
 
 
     $sql = "DELETE FROM pages ";
-    $sql .= "WHERE id='" . $id . "' ";
+    $sql .= "WHERE id=:id ";
     $sql .= "LIMIT 1";
-    $result =$connection->query($sql);
+    $stmt = $connection->prepare($sql);
+    $stmt->bindParam(':id', $id);
+    $result = $stmt->execute();
 
     if ($result) {
         return true;
