@@ -27,6 +27,15 @@
       // Do nothing, let the rest of the page proceed
     }
   }
+  // Performs all actions necessary to log out an admin
+  function log_out_admin()
+  {
+    unset($_SESSION['admin_id']);
+    unset($_SESSION['last_login']);
+    unset($_SESSION['username']);
+    // session_destroy();
+    return true;
+  }
 
 
 ?>

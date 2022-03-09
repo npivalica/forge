@@ -342,8 +342,10 @@ function find_admin_by_username($username)
     return $result;
 }
 
-function validate_admin($admin)
+function validate_admin($admin, $options = [])
 {
+
+    $password_required = $options['password_required'] ?? true;
 
     if (is_blank($admin['first_name'])) {
         $errors[] = "First name cannot be blank.";
@@ -373,25 +375,28 @@ function validate_admin($admin)
         $errors[] = "Username not allowed. Try another.";
     }
 
-    if (is_blank($admin['password'])) {
-        $errors[] = "Password cannot be blank.";
-    } elseif (!has_length($admin['password'], array('min' => 12))) {
-        $errors[] = "Password must contain 12 or more characters";
-    } elseif (!preg_match('/[A-Z]/', $admin['password'])) {
-        $errors[] = "Password must contain at least 1 uppercase letter";
-    } elseif (!preg_match('/[a-z]/', $admin['password'])) {
-        $errors[] = "Password must contain at least 1 lowercase letter";
-    } elseif (!preg_match('/[0-9]/', $admin['password'])) {
-        $errors[] = "Password must contain at least 1 number";
-    } elseif (!preg_match('/[^A-Za-z0-9\s]/', $admin['password'])) {
-        $errors[] = "Password must contain at least 1 symbol";
-    }
+    if ($password_required) {
+        if (is_blank($admin['password'])) {
+            $errors[] = "Password cannot be blank.";
+        } elseif (!has_length($admin['password'], array('min' => 12))) {
+            $errors[] = "Password must contain 12 or more characters";
+        } elseif (!preg_match('/[A-Z]/', $admin['password'])) {
+            $errors[] = "Password must contain at least 1 uppercase letter";
+        } elseif (!preg_match('/[a-z]/', $admin['password'])) {
+            $errors[] = "Password must contain at least 1 lowercase letter";
+        } elseif (!preg_match('/[0-9]/', $admin['password'])) {
+            $errors[] = "Password must contain at least 1 number";
+        } elseif (!preg_match('/[^A-Za-z0-9\s]/', $admin['password'])) {
+            $errors[] = "Password must contain at least 1 symbol";
+        }
 
-    if (is_blank($admin['confirm_password'])) {
-        $errors[] = "Confirm password cannot be blank.";
-    } elseif ($admin['password'] !== $admin['confirm_password']) {
-        $errors[] = "Password and confirm password must match.";
+        if (is_blank($admin['confirm_password'])) {
+            $errors[] = "Confirm password cannot be blank.";
+        } elseif ($admin['password'] !== $admin['confirm_password']) {
+            $errors[] = "Password and confirm password must match.";
+        }
     }
+    
 
     return $errors;
 }
@@ -433,7 +438,9 @@ function update_admin($admin)
 {
     global $connection;
 
-    $errors = validate_admin($admin);
+    $password_sent = !is_blank($admin['password']);
+
+    $errors = validate_admin($admin, ['password_required' => $password_sent]);
     if (!empty($errors)) {
         return $errors;
     }
@@ -444,7 +451,9 @@ function update_admin($admin)
     $sql .= "first_name=:first_name, ";
     $sql .= "last_name=:last_name, ";
     $sql .= "email=:email, ";
-    $sql .= "hashed_password=:hashed_password,";
+    if($password_sent){
+        $sql .= "hashed_password='".$hashed_password."',";
+    }
     $sql .= "username=:username ";
     $sql .= "WHERE id=:id ";
     $sql .= "LIMIT 1";
@@ -455,7 +464,6 @@ function update_admin($admin)
     $stmt->bindParam(':email', $admin['email']);
     $stmt->bindParam(':username', $admin['username']);
     $stmt->bindParam(':id', $admin['id']);
-    $stmt->bindParam(':hashed_password', $hashed_password);
 
     $result = $stmt->execute();
 
