@@ -280,4 +280,15 @@ function delete_page($id)
         exit('Error connecting to database') ;
     }
 }
+
+function find_pages_by_subject_id($subject_id)
+{
+    global $connection;
+
+    $sql = "SELECT * FROM pages ";
+    $sql.= "WHERE subject_id='" . $subject_id . "' ";
+    $sql.= "ORDER BY position ASC";
+    $result = $connection->query($sql)->fetchAll();
+    return $result;
+}
 ?>
