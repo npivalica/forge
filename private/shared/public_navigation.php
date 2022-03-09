@@ -1,7 +1,7 @@
 <?php
-    $subject_id = $subject_id ?? '';
-    $page_id = $page_id ?? '';
-    $visible = $visible ?? true;
+$subject_id = $subject_id ?? '';
+$page_id = $page_id ?? '';
+$visible = $visible ?? true;
 ?>
 <navigation>
   <?php $nav_subjects = find_all_subjects(['visible' => $visible]); ?>
@@ -9,7 +9,9 @@
 
     <?php foreach ($nav_subjects as $nav_subject) { ?>
 
-      <li class="<?php if ($nav_subject['id'] == $subject_id) {echo 'selected';} ?>">
+      <li class="<?php if ($nav_subject['id'] == $subject_id) {
+                    echo 'selected';
+                  } ?>">
 
         <a href="<?php echo url_for('index.php'); ?>">
           <?php echo htmlspecialchars($nav_subject['menu_name']); ?>
@@ -35,6 +37,7 @@
 
     <?php } //end of the loop for subjects
     ?>
+    <li><a href="<?php echo url_for('/staff/index.php'); ?>" target="_blank">Staff Area</a></li>
 
   </ul>
 
