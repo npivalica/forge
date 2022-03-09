@@ -331,6 +331,17 @@ function find_admin_by_id($id)
     return $result;
 }
 
+function find_admin_by_username($username)
+{
+    global $connection;
+
+    $sql = "SELECT * FROM admins ";
+    $sql .= "WHERE username='" . $username . "' ";
+    $sql .= "LIMIT 1";
+    $result = $connection->query($sql)->fetch();
+    return $result;
+}
+
 function validate_admin($admin)
 {
 
