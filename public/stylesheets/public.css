@@ -47,12 +47,16 @@ header h1 {
 
 footer {
   clear: both;
-  height: 3em;
+  height: 4em;
   margin: 0;
   padding: 1em;
   text-align: center;
   background: #e03e52;
   color: #FFFFFF;
+}
+
+footer a {
+    color: #FFFFFF;
 }
 
 
