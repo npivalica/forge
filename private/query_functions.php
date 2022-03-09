@@ -1,10 +1,16 @@
 <?php 
-// PREPARE STATEMENT ZA SQL INJECTIONS
 // SUBJECTS
 
-function find_all_subjects(){
+function find_all_subjects($options=[]){
     global $connection;
-    $sql = "SELECT * FROM subjects ORDER BY position ASC";
+
+    $visible = $options['visible'] ?? false;
+
+    $sql = "SELECT * FROM subjects ";
+    if($visible){
+        $sql.= "WHERE visible = true ";
+    }
+    $sql.= "ORDER BY position ASC";
     $result = $connection->query($sql)->fetchAll();
     return $result;
     
@@ -138,12 +144,18 @@ function find_all_pages()
     return $result;
 }
 
-function find_page_by_id($id)
+function find_page_by_id($id, $options = [])
 {
     global $connection;
 
+    $visible = $options['visible'] ?? false;
+
+
     $sql = "SELECT * FROM pages ";
-    $sql .= "WHERE id='" . $id . "'";
+    $sql .= "WHERE id='" . $id . "' ";
+    if($visible){
+        $sql.= "AND visible=true";
+    }
     $result =$connection->query($sql);
     $page = ($result)->fetch();;
     return $page;
@@ -281,12 +293,16 @@ function delete_page($id)
     }
 }
 
-function find_pages_by_subject_id($subject_id)
+function find_pages_by_subject_id($subject_id, $options = [])
 {
     global $connection;
+    $visible = $options['visible'] ?? false;
 
     $sql = "SELECT * FROM pages ";
     $sql.= "WHERE subject_id='" . $subject_id . "' ";
+    if($visible){
+        $sql.= "AND visible=true ";
+    }
     $sql.= "ORDER BY position ASC";
     $result = $connection->query($sql)->fetchAll();
     return $result;

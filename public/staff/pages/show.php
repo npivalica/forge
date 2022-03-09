@@ -15,6 +15,10 @@ $page = find_page_by_id($id);
     <div class="page show">
         <h1>Page: <?php echo htmlspecialchars($page['menu_name']); ?></h1>
 
+        <div class="actions">
+            <a class="action" href="<?php echo url_for('/index.php?id=' . htmlspecialchars(urlencode($page['id'])) . '&preview=true'); ?>" target="_blank">Preview</a>
+        </div>
+
         <div class="attributes">
             <?php $subject = find_subject_by_id($page['subject_id']); ?>
             <dl>

@@ -1,9 +1,10 @@
 <?php
     $subject_id = $subject_id ?? '';
     $page_id = $page_id ?? '';
+    $visible = $visible ?? true;
 ?>
 <navigation>
-  <?php $nav_subjects = find_all_subjects(); ?>
+  <?php $nav_subjects = find_all_subjects(['visible' => $visible]); ?>
   <ul class="subjects">
 
     <?php foreach ($nav_subjects as $nav_subject) { ?>
@@ -14,7 +15,7 @@
           <?php echo htmlspecialchars($nav_subject['menu_name']); ?>
         </a>
 
-        <?php $nav_pages = find_pages_by_subject_id($nav_subject['id']); ?>
+        <?php $nav_pages = find_pages_by_subject_id($nav_subject['id'], ['visible' => $visible]); ?>
         <ul class="pages">
 
           <?php foreach ($nav_pages as $nav_page) { ?>
