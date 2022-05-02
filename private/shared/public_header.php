@@ -10,6 +10,8 @@
   <meta name="keywords" content="bank, forge, loan, mortgage, home" />
   <meta name="robots" content="noindex,follow" />
   <meta name="language" content="english">
+  <link rel="stylesheet" media="all" type="text/css" href="<?php echo url_for('/stylesheets/public.css'); ?>" />
+  <link rel="shortcut icon" href="<?php echo url_for('favicon.ico'); ?>" />
   <title>forge
     <?php
     if (isset($page_title)) {
@@ -20,9 +22,6 @@
     }
     ?>
   </title>
-  <link rel="stylesheet" media="all" href="<?php echo url_for('/stylesheets/public.css'); ?>" />
-  <link rel="shortcut icon" href="<?php echo url_for('favicon.ico'); ?>" />
-
 </head>
 
 <body>

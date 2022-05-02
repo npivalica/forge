@@ -201,6 +201,10 @@ navigation li {
   margin-right: 40px;
 }
 
+#service-blocks .service img{
+  width: 100%;
+}
+
 /* Learn More links */
 
 a.learnmore {
