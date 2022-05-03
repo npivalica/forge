@@ -1,5 +1,7 @@
 <?php
+
 //BLOCKS OF SERVICES
+
 function find_all_services()
 {
     global $connection;
@@ -407,7 +409,6 @@ function validate_admin($admin, $options = [])
         }
     }
     
-
     return $errors;
 }
 

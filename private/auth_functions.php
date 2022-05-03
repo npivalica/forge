@@ -33,7 +33,6 @@
     unset($_SESSION['admin_id']);
     unset($_SESSION['last_login']);
     unset($_SESSION['username']);
-    // session_destroy();
     return true;
   }
 

@@ -16,7 +16,7 @@ function error_500(){
     header($_SERVER["SERVER_PROTOCOL"] . "500 INTERNAL SERVER ERROR"); 
     exit();
 }
-function redirect_to($location)//umesto header("Location: " . url_for('staff/subjects/index.php'));
+function redirect_to($location)//instead header("Location: " . url_for('staff/subjects/index.php'));
 {
     header("Location: " . $location);
     exit;

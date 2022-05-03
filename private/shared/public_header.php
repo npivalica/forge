@@ -25,7 +25,7 @@
   <header>
     <h1>
       <a href="<?php echo url_for('/index.php'); ?>">
-        <img src="<?php echo url_for('/images/logo.png'); ?>" alt="" />
+        <img src="<?php echo url_for('/images/logo.png'); ?>" alt="forge logo" />
       </a>
     </h1>
   </header>
