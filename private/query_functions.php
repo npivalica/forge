@@ -1,4 +1,15 @@
-<?php 
+<?php
+//BLOCKS OF SERVICES
+function find_all_services()
+{
+    global $connection;
+
+    $sql = "SELECT * FROM services ";
+    $sql .= "ORDER BY id ASC";
+    $result = $connection->query($sql)->fetchAll();
+    return $result;
+}
+
 // SUBJECTS
 
 function find_all_subjects($options=[]){
@@ -13,7 +24,6 @@ function find_all_subjects($options=[]){
     $sql.= "ORDER BY position ASC";
     $result = $connection->query($sql)->fetchAll();
     return $result;
-    
 }
 
 function find_subject_by_id($id)
