@@ -17,7 +17,7 @@ if (!isset($page_title)) {
   <meta name="language" content="english">
   <meta name="keywords" content="cms, staff, subjects, pages, bank, forge" />
   <title>forge - <?php echo htmlspecialchars($page_title); ?></title>
-  <link rel="stylesheet" media="all" href="<?php echo url_for('/stylesheets/staff.css'); ?>" />
+  <link rel="stylesheet" type="text/css" media="all" href="<?php echo url_for('/stylesheets/staff.css'); ?>" />
   <link rel="shortcut icon" href="<?php echo url_for('favicon.ico'); ?>" />
 
 </head>
@@ -29,10 +29,11 @@ if (!isset($page_title)) {
 
   <navigation>
     <ul>
-      <li>User: <?php echo $_SESSION['username'] ?? ''; ?></li>
-      <li><a href="<?php echo url_for('/staff/index.php'); ?>">Menu</a></li>
-      <li><a href="<?php echo url_for('/staff/logout.php'); ?>">Log out</a></li>
-
+      <?php if (is_logged_in()) { ?>
+        <li>User: <?php echo $_SESSION['username'] ?? ''; ?></li>
+        <li><a href="<?php echo url_for('/staff/index.php'); ?>">Menu</a></li>
+        <li><a href="<?php echo url_for('/staff/logout.php'); ?>">Log out</a></li>
+      <?php } ?>
     </ul>
   </navigation>
   <?php echo display_session_message(); ?>
