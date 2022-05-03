@@ -16,10 +16,9 @@ if (!isset($page_title)) {
   <meta name="robots" content="noindex,follow" />
   <meta name="language" content="english">
   <meta name="keywords" content="cms, staff, subjects, pages, bank, forge" />
-  <title>forge - <?php echo htmlspecialchars($page_title); ?></title>
   <link rel="stylesheet" type="text/css" media="all" href="<?php echo url_for('/stylesheets/staff.css'); ?>" />
   <link rel="shortcut icon" href="<?php echo url_for('favicon.ico'); ?>" />
-
+  <title>forge - <?php echo htmlspecialchars($page_title); ?></title>
 </head>
 
 <body>
