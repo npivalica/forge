@@ -7,10 +7,7 @@ $service_set = find_all_services();
 </div>
 
 <div id="content">
-
   <h2>At forge Bank, we have the products and customer service to back up our "worldly" claims. Give us a try, and you'll see we stand by our values and our customers.</h2>
-
-
   <div id="service-blocks">
     <?php foreach ($service_set as $service) { ?>
       <div class="service">
@@ -20,5 +17,4 @@ $service_set = find_all_services();
       </div>
     <?php } ?>
   </div>
-
 </div>
