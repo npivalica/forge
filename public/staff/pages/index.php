@@ -34,7 +34,7 @@ $subject_set = find_all_subjects();
       </form>
     </div>
 
-    <div class="actions">
+    <!-- <div class="actions">
       <select id="ddlSub">
         <option value="0">Filter pages by subject</option>
         <?php
@@ -45,7 +45,8 @@ $subject_set = find_all_subjects();
         endforeach;
         ?>
       </select>
-    </div>
+    </div> -->
+
     <div id="pagesList">
       <table class="list">
         <tr>
