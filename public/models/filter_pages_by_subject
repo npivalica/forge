@@ -1,0 +1,24 @@
+<?php
+    header("Content-type: application/json");
+    if($_SERVER['REQUEST_METHOD'] == 'POST'){
+        include "../initialize.php.php";
+        try{
+            $idSub = $_POST['id'];
+            $pages = "";
+            if($idSub == "0"){
+                $pages = find_all_pages();
+            }
+            else{
+                $pages = pages_by_subject_id($idSub);
+            }
+            echo json_encode($pages);
+            http_response_code(200);
+        }
+        catch(PDOException $exception){
+            http_response_code(500);
+        }
+    }
+    else{
+        http_response_code(404);
+    }
+?>

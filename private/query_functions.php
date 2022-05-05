@@ -173,6 +173,15 @@ function find_page_by_id($id, $options = [])
     return $page;
 }
 
+function pages_by_subject_id($idSub){
+    global $connection;
+    $sql = "SELECT * FROM pages p INNER JOIN subjects s ON p.subject_id = s.id WHERE p.subject_id=:id";
+    $query = $connection->prepare($sql);
+    $query->bindParam(":id", $idSub);
+    $query->execute();
+    $result = $query->fetchAll();
+}
+
 function validate_page($page)
 {
     $errors = [];
